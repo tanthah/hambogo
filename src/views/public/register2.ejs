@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+  <%- include('../templates/head.ejs') -%>
+
+  <body class="bg-primary">
+    <%- include('../templates/header.ejs') -%>
+    <div class="container mt-5">
+      <div class="row justify-content-center">
+        <div class="col-md-6">
+          <div class="card bg-dark text-white">
+            <div class="card-header">
+              <h3 class="mb-0">Registration (New Version)</h3>
+            </div>
+            <div class="card-body">
+              <!-- Flash messages -->
+              <% if (messages.error) { %>
+              <div class="alert alert-danger">
+                <%= messages.error %>
+              </div>
+              <% } %>
+
+              <form
+                id="registrationForm"
+                method="POST"
+                action="/register2"
+              >
+                <input
+                  type="hidden"
+                  name="_csrf"
+                  value="<%= csrfToken %>"
+                />
+
+                <div class="form-group">
+                  <label for="name">Full Name</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="name"
+                    name="name"
+                    required
+                  />
+                  <small class="text-danger" id="nameError"></small>
+                </div>
+
+                <div class="form-group">
+                  <label for="email">Email address</label>
+                  <input
+                    type="email"
+                    class="form-control"
+                    id="email"
+                    name="email"
+                    required
+                  />
+                  <small class="form-text text-muted"
+                    >We'll never share your email with anyone
+                    else.</small
+                  >
+                  <small class="text-danger" id="emailError"></small>
+                </div>
+
+                <div class="form-group">
+                  <label for="password">Password</label>
+                  <input
+                    type="password"
+                    class="form-control"
+                    id="password"
+                    name="password"
+                    required
+                  />
+                  <small
+                    class="text-danger"
+                    id="passwordError"
+                  ></small>
+                </div>
+
+                <button
+                  type="submit"
+                  class="btn btn-warning float-right"
+                  id="registerBtn"
+                >
+                  Register
+                </button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- JavaScript validation -->
+    <script>
+      document
+        .getElementById("registrationForm")
+        .addEventListener("submit", function (e) {
+          const name = document.getElementById("name").value.trim();
+          const email = document.getElementById("email").value.trim();
+          const password = document.getElementById("password").value;
+
+          // Clear previous errors
+          document.getElementById("nameError").textContent = "";
+          document.getElementById("emailError").textContent = "";
+          document.getElementById("passwordError").textContent = "";
+
+          let isValid = true;
+
+          // Validate name
+          if (name === "") {
+            document.getElementById("nameError").textContent =
+              "Full Name is required";
+            isValid = false;
+          }
+
+          // Validate email
+          const emailRegex =
+            /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+          if (email === "") {
+            document.getElementById("emailError").textContent =
+              "Email is required";
+            isValid = false;
+          } else if (!emailRegex.test(email)) {
+            document.getElementById("emailError").textContent =
+              "Invalid email format";
+            isValid = false;
+          }
+
+          // Validate password
+          if (password === "") {
+            document.getElementById("passwordError").textContent =
+              "Password is required";
+            isValid = false;
+          } else if (password.length < 6) {
+            document.getElementById("passwordError").textContent =
+              "Password must be at least 6 characters";
+            isValid = false;
+          }
+
+          if (!isValid) {
+            e.preventDefault();
+          }
+        });
+    </script>
+  </body>
+</html>
